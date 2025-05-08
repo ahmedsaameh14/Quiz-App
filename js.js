@@ -50,7 +50,9 @@ function startQuiz(){
     nextBtn.innerHTML="Next";
     showQuestion();
 }
+
 function showQuestion(){
+    resetState();
     let currentQuestion = questions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1 ;
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
@@ -66,11 +68,13 @@ function showQuestion(){
         button.addEventListener('click' , selectAnswer)
     });
 }
+
 function selectAnswer(e){
     const selectedBtn = e.target;
     /* const isCorrect = selectedBtn.dataset.correct === "true"; */
     if (selectedBtn.dataset.correct === "true"){
         selectedBtn.classList.add("correct");
+        score++
     }else {
         selectedBtn.classList.add("incorrect");
     }
@@ -82,5 +86,38 @@ function selectAnswer(e){
     });
     nextBtn.style.display="block";
 }
+
+function nextQuestion(){
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length){
+        showQuestion();
+    }else {
+        showScore();
+    }
+}
+
+function showScore(){
+    resetState();
+    questionElement.innerHTML=`Your Score is ${score} out of ${questions.length}`;
+    nextBtn.innerHTML="Play Again";
+    nextBtn.style.display="block";
+}
+
+function resetState(){
+    nextBtn.style.display="none";
+    while(answerBtn.firstChild){
+        answerBtn.removeChild(answerBtn.firstChild);
+    }
+}
+
+nextBtn.addEventListener('click', () => {
+    if (currentQuestionIndex < questions.length){
+        nextQuestion()
+    }else {
+        startQuiz();
+    }
+})
+
+
 
 startQuiz();
